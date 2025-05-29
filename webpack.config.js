@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');  // <-- import plugin
 
 module.exports = {
   entry: './src/index.js',
@@ -8,15 +9,12 @@ module.exports = {
     filename: 'bundle.js',
     clean: true,
   },
+  // hapus saja devServer.static bagian public kalau mau deploy ke produksi,
+  // karena ini hanya untuk dev server
   devServer: {
-    static: [
-      {
-        directory: path.join(__dirname, 'dist'),
-      },
-      {
-        directory: path.join(__dirname, 'public'), // ⬅️ ini wajib agar gambar bisa diakses
-      },
-    ],
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
     proxy: [
       {
         context: ['/api'],
@@ -37,6 +35,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'public', to: '' },  // copy semua dari public ke dist root
+      ],
+    }),
   ],
-  mode: 'development',
+  mode: 'production',  // ganti mode jadi production untuk build yang optimal
 };

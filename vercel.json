@@ -1,9 +1,14 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "rewrites": [
-    { "source": "/api/contact", "destination": "/api/contact.js" },
-    { "source": "/api/predict", "destination": "/api/predict.js" }
+  "routes": [
+    { "src": "/api/contact", "dest": "/api/contact.js" },
+    { "src": "/api/predict", "dest": "/api/predict.js" },
+    { "src": "/(.*)", "dest": "/dist/$1" }
+  ],
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "dist/**", "use": "@vercel/static" },
+    { "src": "public/**", "use": "@vercel/static" }
   ]
 }
